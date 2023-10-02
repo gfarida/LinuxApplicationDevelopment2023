@@ -34,7 +34,7 @@ test_3:	prog prog-a prog-so
 		LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) ./prog-so $(ARGS_1) > $(OUTPUT_SO)3 2> $(DEV_NULL)
 		cmp output_3 output-a_3
 		cmp output-a_3 output-so_3
-		@ echo "                    =========== TEST WITH 3 PARAMETERS IS SUCCED==========="
+		@ echo "                    =========== TEST WITH 3 PARAMETERS IS SUCCED ==========="
 
 prog-a:	prog.o liboutput_static.a
 		cc -L. $< -loutput_static -o $@
