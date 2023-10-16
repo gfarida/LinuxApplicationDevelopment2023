@@ -1,10 +1,9 @@
 RUN_GDB=run_gdb_
 OUT_GDB=out_gdb_
-DEV_NULL = /dev/null
 
 
 range: range.c
-		gcc -g -o0 range.c -o range
+		gcc -g -o0 range.c -w -o range
 
 test: range
 		gdb --args range 1 12 < $(RUN_GDB)1 | grep @@@ | cmp gdb_1_correct
