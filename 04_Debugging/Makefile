@@ -14,4 +14,4 @@ test: range
 		@ echo "                    ========= TEST #2 IS SUCCED ============"
 
 clean:
-		rm -f *.o range a.out
+		rm -f *.o range a.out $(RUN_GDB)*
