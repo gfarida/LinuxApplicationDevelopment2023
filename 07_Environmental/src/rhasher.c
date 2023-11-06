@@ -1,13 +1,13 @@
+#include "rhash.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
 
-#include "rhash.h"
+#include "config.h"
 
-#ifdef READLINE
+#ifndef WITHOUT_READLINE
 #include <readline/readline.h>
-#include <readline/history.h>
 #endif
 
 enum {_MD5, MD5, _SHA1, SHA1, _TTH, TTH, UNKNOWN_MODE};
@@ -136,7 +136,6 @@ void hashing(int hash_mode, char *string, bool is_file) {
             if (is_file) {
                 res = rhash_file(RHASH_TTH, string, digest);
                 if (res < 0) {
-                    printf("%s", string);
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_TTH), RHPR_BASE64);
@@ -155,7 +154,6 @@ void hashing(int hash_mode, char *string, bool is_file) {
             if (is_file) {
                 res = rhash_file(RHASH_TTH, string, digest);
                 if (res < 0) {
-                    printf("%s", string);
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_TTH), RHPR_HEX);
@@ -174,32 +172,29 @@ void hashing(int hash_mode, char *string, bool is_file) {
 }
 
 int main(int argc, char **argv) {
-    #ifdef READLINE
-    printf("sldjflkjsdlfjklkjsdlfjsdf\n");
-    #endif
     char *line = NULL, *hash_alg, *string;
     bool is_file;
     size_t len = 0;
-    ssize_t nread;
+    ssize_t nread = 0;
     int hash_mode;
     rhash_library_init();
 
     while (true) {
-#ifdef READLINE
+        #ifndef READLINE
         line = readline(NULL);
 
         if (!line) {
             nread = -1;
         }
 
-        printf("%s\n", line);
-#else
+        #else
         nread = getline(&line, &len, stdin);
+        #endif
 
         if (nread == -1) {
             break;
         }
-#endif
+
         
         hash_alg = strtok(line, " ");
         string = strtok(NULL, " ");
@@ -214,16 +209,19 @@ int main(int argc, char **argv) {
         is_file = is_file_check(string);
 
         if (!is_file) {
-            char string_[100];
-            string = string + 1;
-            memcpy(string_, string, strlen(string) - 1);
-            string_[strlen(string)] = '\0';
-            hashing(hash_mode, string_, is_file);
+            string = (char *)string + 1;
+
+            if (string[strlen(string) - 1] == '\n') {
+                string[strlen(string) - 1] == 0;
+            }
+
+            hashing(hash_mode, string, is_file);
         } else {
-            char filepath[100];
-            memcpy(filepath, string, strlen(string) - 1);
-            filepath[strlen(string)] = '\0';
-            hashing(hash_mode, filepath, is_file);
+            if (string[strlen(string) - 1] == '\n') {
+                string[strlen(string) - 1] == 0;
+            }
+
+            hashing(hash_mode, string, is_file);
         }
     }
 
