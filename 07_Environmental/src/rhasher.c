@@ -4,8 +4,10 @@
 #include <errno.h>
 
 #include "rhash.h"
+
 #ifdef READLINE
 #include <readline/readline.h>
+#include <readline/history.h>
 #endif
 
 enum {_MD5, MD5, _SHA1, SHA1, _TTH, TTH, UNKNOWN_MODE};
@@ -57,6 +59,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_file(RHASH_MD5, string, digest);
                 if (res < 0) {
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_MD5), RHPR_BASE64);
                 }
@@ -64,6 +67,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_msg(RHASH_MD5, string, strlen(string), digest);
                 if (res < 0) {
                     fprintf(stderr, "message digest calculation error\n");
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_MD5), RHPR_BASE64);
                 }
@@ -75,6 +79,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_file(RHASH_MD5, string, digest);
                 if (res < 0) {
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_MD5), RHPR_HEX);
                 }
@@ -82,6 +87,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_msg(RHASH_MD5, string, strlen(string), digest);
                 if (res < 0) {
                     fprintf(stderr, "message digest calculation error\n");
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_MD5), RHPR_HEX);
                 }
@@ -93,6 +99,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_file(RHASH_SHA1, string, digest);
                 if (res < 0) {
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_SHA1), RHPR_BASE64);
                 }
@@ -100,6 +107,7 @@ void hashing(int hash_mode, char *string, bool is_file) {
                 res = rhash_msg(RHASH_SHA1, string, strlen(string), digest);
                 if (res < 0) {
                     fprintf(stderr, "message digest calculation error\n");
+                    break;
                 } else {
                     rhash_print_bytes(output, digest, rhash_get_digest_size(RHASH_SHA1), RHPR_BASE64);
                 }
@@ -146,7 +154,6 @@ void hashing(int hash_mode, char *string, bool is_file) {
         case TTH:
             if (is_file) {
                 res = rhash_file(RHASH_TTH, string, digest);
-                printf("dsnflsdf\n");
                 if (res < 0) {
                     printf("%s", string);
                     fprintf(stderr, "LibRHash error: %s\n", strerror(errno));
@@ -167,6 +174,9 @@ void hashing(int hash_mode, char *string, bool is_file) {
 }
 
 int main(int argc, char **argv) {
+    #ifdef READLINE
+    printf("sldjflkjsdlfjklkjsdlfjsdf\n");
+    #endif
     char *line = NULL, *hash_alg, *string;
     bool is_file;
     size_t len = 0;
@@ -181,6 +191,8 @@ int main(int argc, char **argv) {
         if (!line) {
             nread = -1;
         }
+
+        printf("%s\n", line);
 #else
         nread = getline(&line, &len, stdin);
 
