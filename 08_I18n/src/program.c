@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <locale.h>
+#include <string.h>
 
 int main(int argc, char **argv) {
     printf("Загадайте число от 1 до 100 и введите его:\n");
