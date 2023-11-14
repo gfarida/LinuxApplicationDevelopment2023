@@ -5,12 +5,11 @@
 #include <libintl.h>
 
 #define _(STRING) gettext(STRING)
-#define LOCALE_PATH "."
 
 int main(int argc, char **argv) {
-	setlocale (LC_ALL, "");
-	bindtextdomain ("program", LOCALE_PATH);
-	textdomain ("program");
+	setlocale(LC_ALL, "");
+	bindtextdomain("ru", ".");
+	textdomain("ru");
 
     printf(_("Think of a number from 1 to 100 and enter it: \n"));
 
