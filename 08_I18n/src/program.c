@@ -3,28 +3,29 @@
 #include <string.h>
 
 int main(int argc, char **argv) {
-    printf("Загадайте число от 1 до 100 и введите его:\n");
+    printf("Think of a number from 1 to 100 and enter it: \n");
 
     int n;
     char ans[100];
     scanf("%d", &n);
-    int b = 1, e = 100, c = 50;
+    int beg = 0, end = 100, c;
 
 
-    while (true) {
-        printf("Число больше %d? Да/Нет \n", c);
+    while (1) {
+        c = (end + beg) / 2;
+        printf("Is your number greater than %d? y/n \n", c);
         scanf("%s", ans);
 
-        if (!cmp(ans, "Да")) {
-            b = c;
+        if (!strcmp(ans, "y")) {
+            beg = c;
+        } else if (!strcmp(ans, "n")) {
+            end = c;
         } else {
-            e = c;
+            continue;
         }
 
-        c = (e - b) / 2;
-
-        if (e == b) {
-            printf("Ваше число - это %d\n", e);
+        if (end - beg <= 1) {
+            printf("Your number is %d\n", end);
             break;
         }
     }

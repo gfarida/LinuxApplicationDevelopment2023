@@ -20,4 +20,5 @@ AC_CHECK_HEADER([string.h])
 # Checks for library functions.
 AC_CHECK_FUNCS([realpath setlocale])
 
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
