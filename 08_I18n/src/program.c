@@ -1,9 +1,18 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
+#include <libgen.h>
+#include <libintl.h>
+
+#define _(STRING) gettext(STRING)
+#define LOCALE_PATH "."
 
 int main(int argc, char **argv) {
-    printf("Think of a number from 1 to 100 and enter it: \n");
+	setlocale (LC_ALL, "");
+	bindtextdomain ("program", LOCALE_PATH);
+	textdomain ("program");
+
+    printf(_("Think of a number from 1 to 100 and enter it: \n"));
 
     int n;
     char ans[100];
@@ -13,19 +22,19 @@ int main(int argc, char **argv) {
 
     while (1) {
         c = (end + beg) / 2;
-        printf("Is your number greater than %d? y/n \n", c);
+        printf(_("Is your number greater than %d? y/n \n"), c);
         scanf("%s", ans);
 
-        if (!strcmp(ans, "y")) {
+        if (!strcmp(ans, _("y"))) {
             beg = c;
-        } else if (!strcmp(ans, "n")) {
+        } else if (!strcmp(ans, _("n"))) {
             end = c;
         } else {
             continue;
         }
 
         if (end - beg <= 1) {
-            printf("Your number is %d\n", end);
+            printf(_("Your number is %d\n"), end);
             break;
         }
     }

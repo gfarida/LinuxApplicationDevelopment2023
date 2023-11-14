@@ -1,1 +1,4 @@
-SUBDIRS = src po
+SUBDIRS = src
+
+clean:
+	git clean -df
