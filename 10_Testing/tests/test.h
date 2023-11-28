@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <setjmp.h>
+#include "buf.h"
+#pragma once
 
 static jmp_buf escape;
 
@@ -11,7 +13,7 @@ test_abort(void)
 }
 
 #define BUF_ABORT test_abort()
-#include "buf.h"
+
 
 #if _WIN32
 #  define C_RED(s)     s
@@ -25,10 +27,8 @@ test_abort(void)
     do { \
         if (x) { \
             printf(C_GREEN("PASS") " %s\n", s); \
-            count_pass++; \
         } else { \
             printf(C_RED("FAIL") " %s\n", s); \
-            count_fail++; \
         } \
     } while (0)
 
