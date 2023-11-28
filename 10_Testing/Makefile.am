@@ -5,4 +5,4 @@ gcov:	check
 
 clean:
 	git clean -df
-	rm -rf tests/*.o
+	rm -rf tests/*.o src/*.lo src/*.la

@@ -34,6 +34,9 @@
 #  define BUF_ABORT abort()
 #endif
 
+void * buf_grow1(void *, size_t, ptrdiff_t);
+
+
 struct buf {
     size_t capacity;
     size_t size;

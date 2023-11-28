@@ -1,4 +1,4 @@
-CFLAGS = -ansi -pedantic -Wall -Wextra
+CFLAGS = -ansi -pedantic
 if COND_GCOV
 CFLAGS  += -O0 -g -fprofile-arcs -ftest-coverage
 else
@@ -6,8 +6,6 @@ CFLAGS  += -O3 -g3
 endif
 
 lib_LTLIBRARIES = libbuf.la
-
-namegen_LDADD = libbuf.la
 
 libbuf.c: buf.h
 
