@@ -20,7 +20,6 @@ rus:
 http:	doxygen-doc
 	python3 -m http.server --directory $</html
 
-
 clean:
 	git clean -df
 	rm src/*.o
