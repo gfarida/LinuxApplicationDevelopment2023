@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
         }
 
     
-    while(unvisitedCount() > 0);
+    while(unvisitedCount() > 0);git stats
 
     print_maze(maze, maze_size;)
     free_maze();
