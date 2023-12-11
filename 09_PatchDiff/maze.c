@@ -15,6 +15,12 @@ struct cellString {
     int size;
 } cellString;
 
+struct stack { 
+    struct cell cell;
+    struct stack next;
+    int size;
+} stack;
+
 void fill_maze(int **maze, int maze_size) {
     for (i = 0; i < maze_size; i++) {
         for (j = 0; j < maze_size; j++) {
@@ -93,14 +99,14 @@ int **remove_wall(struct cell first, struct cell second, int **maze) {
     return maze;
 }
 
-int **setMode(struct cell c, int **maze, int mode){
+int **set_mode(struct cell c, int **maze, int mode){
     int x = c.x;
     int y = c.y;
     maze[y][x] = mode;
     return maze;
 }
 
-void push(struct cell c, struct stack **s, int* sizeptr){
+void push(struct stack **s, struct cell c, int* sizeptr){
    stack *tmp = malloc(sizeof(stack));
    tmp->next = *s;
    tmp->c = c;
@@ -119,6 +125,18 @@ cell pop(struct stack **s, int* sizeptr){
     return c;
 }
 
+int unvisited_count(int **maze, int maze_size) {
+    int res = 0;
+    for(i = 0; i < maze_size; i++){
+        for(j = 0; j < maze_size; j++){
+            if (maze[i][j] != VISITED && maze[i][j] != WALL) {
+                ++res;
+            }
+        }
+    }
+    return res;
+}
+
 
 int main(int argc, char **argv) {
     int maze_size = 6;
@@ -131,25 +149,28 @@ int main(int argc, char **argv) {
 
     fill_maze(maze, maze_size);
 
-    cell start_cell = {1, 1}, cur_cell = {1, 1}, neighbour_cell = {1, 1};
+    struct cell start_cell = {1, 1}, cur_cell = {1, 1}, neighbour_cell = {1, 1};
+    struct stack *stack_of_cells;
+    int stack_size = 0;
 
+    cur_cell = start_cell;
     do{
-        struct cellString neighbours = get_neighbours(maze_size, maze, start_cell);
+        struct cellString neighbours = get_neighbours(maze_size, maze, cur_cell);
         if (neighbours.size != 0) {
             int random_idx = rand() % (neighbours.size);
             neighbour_cell = neighbours.cells[random_idx]; 
 
-            push(d.startPoint);
+            push(&stack_of_cells, cur_cell, &stack_size);
 
             maze = remove_wall(cur_cell, neighbour_cell, maze); 
             cur_cell = neighbour_cell; 
-            maze = set_mode(d.startPoint, d.maze, VISITED);
+            maze = set_mode(cur_cell, maze, VISITED);
 
             free(neighbours.cells);
-        } else if (stackSize > 0){
-            startPoint = pop();
+        } else if (stack_size > 0){
+            cur_cell = pop(&stack_of_cells, &stack_size);
         }
-    } while (unvisitedCount() > 0);
+    } while (unvisited_count(maze, maze_size) > 0);
 
     print_maze(maze, maze_size;)
     free_maze(maze, maze_size);
