@@ -1,0 +1,44 @@
+--- maze.c	2023-12-20 15:17:20.126530092 +0300
++++ maze_patch_2.c	2023-12-20 15:26:04.069333466 +0300
+@@ -33,13 +33,13 @@
+     }
+ }
+ 
+-void print_maze(int **maze, int maze_size) {
++void print_maze(int **maze, int maze_size, char room_symbl, char wall_symbl) {
+     for (int i = 0; i < maze_size; i++) {
+         for (int j = 0; j < maze_size; j++) {
+             if (maze[i][j] == WALL) {
+-                printf("#");
++                printf("%c", wall_symbl);
+             } else {
+-                printf(".");
++                printf("%c", room_symbl);
+             } 
+         }
+         printf("\n");
+@@ -137,7 +137,13 @@
+ 
+ 
+ int main(int argc, char **argv) {
+-    int maze_size = 13;
++    if (argc < 3) {
++        printf("Usage: ./maze_patch_2 .#(or other symbols) maze_size\n");
++        return 0;
++    }
++
++    int maze_size = atoi(argv[2]) * 2 + 1;
++    char room_syml = argv[1][0], wall_syml = argv[1][1];
+ 
+     int **maze = (int **)malloc(maze_size * sizeof(int *));
+ 
+@@ -170,7 +176,7 @@
+         }
+     } while (unvisited_count(maze, maze_size) > 0);
+ 
+-    print_maze(maze, maze_size);
++    print_maze(maze, maze_size, room_syml, wall_syml);
+     free_maze(maze, maze_size);
+     return 0;
+ }
+\ No newline at end of file

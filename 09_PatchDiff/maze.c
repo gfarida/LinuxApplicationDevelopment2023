@@ -3,7 +3,7 @@
 
 //алгоритм взят с сайта: https://habr.com/ru/articles/262345/
 
-enum cellTypes {CELL = 0, GENCELL, GENVISITED, RENDERED, WALL, WAY, CURRENT, LAST, SEEKED, EXIT};
+enum cellTypes {CELL = 0, GENCELL, VISITED, RENDERED, WALL, WAY, CURRENT, LAST, SEEKED, EXIT};
 
 struct cell {
     int x;
@@ -17,25 +17,25 @@ struct cellString {
 
 struct stack { 
     struct cell cell;
-    struct stack next;
+    struct stack *next;
     int size;
 } stack;
 
 void fill_maze(int **maze, int maze_size) {
-    for (i = 0; i < maze_size; i++) {
-        for (j = 0; j < maze_size; j++) {
+    for (int i = 0; i < maze_size; i++) {
+        for (int j = 0; j < maze_size; j++) {
             if ((i % 2 != 0  && j % 2 != 0) && (i < maze_size - 1 && j < maze_size - 1)) {
-                maze[i][j] = '.';
+                maze[i][j] = CELL;
             } else {
-                maze[i][j] = '#';
+                maze[i][j] = WALL;
             }
         }
     }
 }
 
 void print_maze(int **maze, int maze_size) {
-    for (i = 0; i < maze_size; i++) {
-        for (j = 0; j < maze_size; j++) {
+    for (int i = 0; i < maze_size; i++) {
+        for (int j = 0; j < maze_size; j++) {
             if (maze[i][j] == WALL) {
                 printf("#");
             } else {
@@ -49,29 +49,27 @@ void print_maze(int **maze, int maze_size) {
 
 
 void free_maze(int **maze, int maze_size) {
-    for(i = 0; i < maze_size; i++){
-        for(j = 0; j < maze_size; j++){
-            free(maze[i][j]);
-        }
+    for(int i = 0; i < maze_size; i++){
+        free(maze[i]);
     }
     
     free(maze);
 }
 
-struct cellString get_neighbours(int maze_size, int** maze, cell c){
+struct cellString get_neighbours(int maze_size, int** maze, struct cell c){
     int i, x = c.x, y = c.y;
 
-    cell up = {x, y - 2}, rt = {x + 2, y}, dw = {x, y + 2}, lt = {x - 2, y};
-    cell d[4]  = {dw, rt, up, lt};
+    struct cell up = {x, y - 2}, rt = {x + 2, y}, dw = {x, y + 2}, lt = {x - 2, y};
+    struct cell d[4]  = {dw, rt, up, lt};
     int size = 0;
 
     struct cellString cells;
     cells.cells = malloc(4 * sizeof(cell));
 
-    for (i = 0; i < 4; i++){
+    for (int i = 0; i < 4; i++){
         if (d[i].x > 0 && d[i].x < maze_size && d[i].y > 0 && d[i].y < maze_size) {
             int maze_cur_cell = maze[d[i].y][d[i].x];
-            cell cur_cell = d[i];
+            struct cell cur_cell = d[i];
             if (maze_cur_cell != WALL && maze_cur_cell != VISITED){
                 cells.cells[size] = cur_cell;
                 ++size;
@@ -107,19 +105,19 @@ int **set_mode(struct cell c, int **maze, int mode){
 }
 
 void push(struct stack **s, struct cell c, int* sizeptr){
-   stack *tmp = malloc(sizeof(stack));
-   tmp->next = *s;
-   tmp->c = c;
+   struct stack *tmp = malloc(sizeof(stack));
+   tmp -> next = *s;
+   tmp -> cell = c;
    (*sizeptr)++;
    *s = tmp;
 }
 
-cell pop(struct stack **s, int* sizeptr){
-    stack* out;
-    cell c;
+struct cell pop(struct stack **s, int* sizeptr){
+    struct stack* out;
+    struct cell c;
     out = *s;
-    *s = (*s)->next;
-    c = out->c;
+    *s = (*s) -> next;
+    c = out -> cell;
     (*sizeptr)--;
     free(out);
     return c;
@@ -127,8 +125,8 @@ cell pop(struct stack **s, int* sizeptr){
 
 int unvisited_count(int **maze, int maze_size) {
     int res = 0;
-    for(i = 0; i < maze_size; i++){
-        for(j = 0; j < maze_size; j++){
+    for(int i = 0; i < maze_size; i++){
+        for(int j = 0; j < maze_size; j++){
             if (maze[i][j] != VISITED && maze[i][j] != WALL) {
                 ++res;
             }
@@ -139,14 +137,14 @@ int unvisited_count(int **maze, int maze_size) {
 
 
 int main(int argc, char **argv) {
-    int maze_size = 6;
+    int maze_size = 13;
 
-    int **maze = (int **)malloc(maze_size * size_of(int *));
+    int **maze = (int **)malloc(maze_size * sizeof(int *));
 
     for (int i = 0; i < maze_size; ++i) {
-        maze[i] = (int *)malloc(maze_size * size_of(int));
+        maze[i] = (int *)malloc(maze_size * sizeof(int));
     }
-
+    
     fill_maze(maze, maze_size);
 
     struct cell start_cell = {1, 1}, cur_cell = {1, 1}, neighbour_cell = {1, 1};
@@ -172,7 +170,7 @@ int main(int argc, char **argv) {
         }
     } while (unvisited_count(maze, maze_size) > 0);
 
-    print_maze(maze, maze_size;)
+    print_maze(maze, maze_size);
     free_maze(maze, maze_size);
     return 0;
 }
